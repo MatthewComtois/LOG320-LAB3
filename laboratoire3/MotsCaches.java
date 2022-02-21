@@ -5,20 +5,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class MotsCaches {
     int grosseurGrille;
     Character[][] grille;
-    ArrayList<String> motsATrouver = new ArrayList<String>();
-    ArrayList<String> motsTrouves = new ArrayList<String>();
+    HashMap<Character, ArrayList<String>> motsATrouver = new HashMap<Character, ArrayList<String>>();
+    SortedSet<String> motsTrouves = new TreeSet<String>();
 
     public String[] Resoudre(String nomFichierGrille, String nomFichierDict) {
         try {
             LireFichierGrille(nomFichierGrille);
             LireFichierDict(nomFichierDict);
-            //ImprimerGrille();
-            //System.out.println();
-            //ImprimerDict();
+            ParcourirTableau();
+            return motsTrouves.toArray(new String[motsTrouves.size()]);
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -46,27 +48,55 @@ public class MotsCaches {
     public void LireFichierDict(String nomFichierDict) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(nomFichierDict));
         String line;
-        int i = 0;
         while ((line = br.readLine()) != null) {
-            motsATrouver.add(line);
-            i++;
+            Character currentStartChar = line.charAt(0);
+            ArrayList<String> currentWords = new ArrayList<String>();
+            if (motsATrouver.containsKey(currentStartChar)) {
+                currentWords = motsATrouver.get(currentStartChar);
+            }
+            currentWords.add(line);
+            motsATrouver.put(line.charAt(0), currentWords);
         }
         br.close();
     }
 
-    public void ImprimerGrille() {
+    public void ParcourirTableau() {
         for (int row = 0; row < grille.length; row++) {
             for (int col = 0; col < grille[row].length; col++) {
-                System.out.print(grille[row][col]);
+                Character currentStartChar = grille[row][col];
+                if (motsATrouver.containsKey(currentStartChar)) {
+                    for (String word : this.motsATrouver.get(currentStartChar)) {
+                        if (!motsTrouves.contains(word) && CheckPositionWord(word, row, col)) {
+                            motsTrouves.add(word);
+                        }
+                    }
+                }
             }
-            System.out.println();
         }
     }
 
-    public void ImprimerDict() {
-        for (String mot : this.motsATrouver) {
-            System.out.println(mot);
+    private boolean CheckPositionWord(String word, int x, int y) {
+        boolean droite = true;
+        boolean gauche = true;
+        boolean haut = true;
+        boolean bas = true;
+        boolean hautDroite = true;
+        boolean basDroite = true;
+        boolean hautGauche = true;
+        boolean basGauche = true;
+        for (int i = 1; i < word.length(); i++) {
+            droite = (droite && x + i < grosseurGrille) ? grille[x + i][y] == word.charAt(i) : false;
+            gauche = (gauche && x - i >= 0) ? grille[x - i][y] == word.charAt(i) : false;
+            bas = (bas && y + i < grosseurGrille) ? grille[x][y + i] == word.charAt(i) : false;
+            haut = (haut && y - i >= 0) ? grille[x][y - i] == word.charAt(i) : false;
+            hautDroite = (hautDroite && x + i < grosseurGrille && y - i >= 0) ? grille[x + i][y - i] == word.charAt(i) : false;
+            basDroite = (basDroite && x + i < grosseurGrille && y + i < grosseurGrille) ? grille[x + i][y + i] == word.charAt(i) : false;
+            hautGauche = (hautGauche && x - i >= 0 && y - i >= 0) ? grille[x - i][y - i] == word.charAt(i) : false;
+            basGauche = (basGauche && x - i >= 0 && y + i < grosseurGrille) ? grille[x - i][y + i] == word.charAt(i) : false;
+            if(!droite && !gauche && !haut && !bas && !hautDroite && !basDroite && !hautGauche && !basGauche){
+                break;
+            }
         }
+        return (droite || gauche || haut || bas || hautDroite || basDroite || hautGauche || basGauche);
     }
-
 }
