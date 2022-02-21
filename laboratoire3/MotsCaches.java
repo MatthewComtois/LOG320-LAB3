@@ -5,21 +5,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class MotsCaches {
     int grosseurGrille;
     Character[][] grille;
     HashMap<Character, ArrayList<String>> motsATrouver = new HashMap<Character, ArrayList<String>>();
-    SortedSet<String> motsTrouves = new TreeSet<String>();
+    ArrayList<String> motsTrouves = new ArrayList<String>();
 
     public String[] Resoudre(String nomFichierGrille, String nomFichierDict) {
         try {
             LireFichierGrille(nomFichierGrille);
             LireFichierDict(nomFichierDict);
             ParcourirTableau();
+            Collections.sort(motsTrouves);
             return motsTrouves.toArray(new String[motsTrouves.size()]);
         } catch (Exception ex) {
             System.out.println(ex);
@@ -66,7 +66,7 @@ public class MotsCaches {
                 Character currentStartChar = grille[row][col];
                 if (motsATrouver.containsKey(currentStartChar)) {
                     for (String word : this.motsATrouver.get(currentStartChar)) {
-                        if (!motsTrouves.contains(word) && CheckPositionWord(word, row, col)) {
+                        if (CheckPositionWord(word, row, col)) {
                             motsTrouves.add(word);
                         }
                     }
