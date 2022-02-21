@@ -66,7 +66,7 @@ public class MotsCaches {
                 Character currentStartChar = grille[row][col];
                 if (motsATrouver.containsKey(currentStartChar)) {
                     for (String word : this.motsATrouver.get(currentStartChar)) {
-                        if (CheckPositionWord(word, row, col)) {
+                        for (int i = 0; i < CheckPositionWord(word, row, col); i++) {
                             motsTrouves.add(word);
                         }
                     }
@@ -75,7 +75,7 @@ public class MotsCaches {
         }
     }
 
-    private boolean CheckPositionWord(String word, int x, int y) {
+    private int CheckPositionWord(String word, int x, int y) {
         boolean droite = true;
         boolean gauche = true;
         boolean haut = true;
@@ -84,6 +84,7 @@ public class MotsCaches {
         boolean basDroite = true;
         boolean hautGauche = true;
         boolean basGauche = true;
+        int nbFoisTrouvee = 0;
         for (int i = 1; i < word.length(); i++) {
             droite = (droite && x + i < grosseurGrille) ? grille[x + i][y] == word.charAt(i) : false;
             gauche = (gauche && x - i >= 0) ? grille[x - i][y] == word.charAt(i) : false;
@@ -97,6 +98,16 @@ public class MotsCaches {
                 break;
             }
         }
-        return (droite || gauche || haut || bas || hautDroite || basDroite || hautGauche || basGauche);
+        
+        nbFoisTrouvee = droite ? nbFoisTrouvee + 1: nbFoisTrouvee;
+        nbFoisTrouvee = gauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = haut ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = bas ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = hautDroite ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = basDroite ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = hautGauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee = basGauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+
+        return nbFoisTrouvee;
     }
 }
