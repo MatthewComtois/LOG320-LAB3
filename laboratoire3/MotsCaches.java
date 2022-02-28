@@ -76,14 +76,7 @@ public class MotsCaches {
     }
 
     private int CheckPositionWord(String word, int x, int y) {
-        boolean droite = true;
-        boolean gauche = true;
-        boolean haut = true;
-        boolean bas = true;
-        boolean hautDroite = true;
-        boolean basDroite = true;
-        boolean hautGauche = true;
-        boolean basGauche = true;
+        boolean droite = true, gauche = true,  haut = true, bas = true, hautDroite = true, basDroite = true, hautGauche = true, basGauche = true;
         int nbFoisTrouvee = 0;
         for (int i = 1; i < word.length(); i++) {
             droite = (droite && x + i < grosseurGrille) ? grille[x + i][y] == word.charAt(i) : false;
@@ -99,14 +92,14 @@ public class MotsCaches {
             }
         }
         
-        nbFoisTrouvee = droite ? nbFoisTrouvee + 1: nbFoisTrouvee;
-        nbFoisTrouvee = gauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = haut ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = bas ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = hautDroite ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = basDroite ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = hautGauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
-        nbFoisTrouvee = basGauche ? nbFoisTrouvee + 1 : nbFoisTrouvee;
+        nbFoisTrouvee += droite ? 1: 0;
+        nbFoisTrouvee += gauche ? 1 : 0;
+        nbFoisTrouvee += haut ? 1 : 0;
+        nbFoisTrouvee += bas ? 1 : 0;
+        nbFoisTrouvee += hautDroite ? 1 : 0;
+        nbFoisTrouvee += basDroite ? 1 : 0;
+        nbFoisTrouvee += hautGauche ? 1 : 0;
+        nbFoisTrouvee += basGauche ? 1 : 0;
 
         return nbFoisTrouvee;
     }
